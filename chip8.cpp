@@ -77,10 +77,148 @@ class Chip8 {
         void OP_2nnn();
         void OP_3xkk();
         void OP_4xkk();
+        void OP_5xy0();
+        void OP_6xkk();
+        void OP_7xkk();
+        void OP_8xy0();
+        void OP_8xy1();
+        void OP_8xy2();
+        void OP_8xy3();
+        void OP_8xy4();
+        void OP_8xy5();
+        void OP_8xy6();
+        void OP_8xy7();
+        void OP_8xyE();
+
+
+
+
 
         
         
-};      
+};
+
+void Chip8::OP_8xy5()
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	uint16_t sub = registers[Vx] - registers[Vy];
+
+	if (Vx > Vy)
+	{
+		registers[0xF] = 1;
+	}
+	else
+	{
+		registers[0xF] = 0;
+	}
+
+	registers[Vx] = sub & 0xFFu;
+}
+
+void Chip8::OP_8xy4()
+{
+	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vy = (opcode & 0x00F0u) >> 4u;
+
+	uint16_t sum = registers[Vx] + registers[Vy];
+
+	if (sum > 255U)
+	{
+		registers[0xF] = 1;
+	}
+	else
+	{
+		registers[0xF] = 0;
+	}
+
+	registers[Vx] = sum & 0xFFu;
+}
+
+void Chip8::OP_8xy3(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    registers[Vx] = registers[Vx] ^ registers[Vy];
+
+}
+
+void Chip8::OP_8xy2(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    registers[Vx] = registers[Vx] & registers[Vy];
+
+}
+
+void Chip8::OP_8xy1(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    registers[Vx] = registers[Vx] | registers[Vy];
+
+}
+
+
+void Chip8::OP_8xy0(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    registers[Vx] = registers[Vy];
+
+}
+
+void Chip8::OP_7xkk(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t kk = (opcode & 0x00FFu);
+
+    registers[Vx] = registers[Vx] + kk; 
+
+}
+
+void Chip8::OP_6xkk(){
+
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t kk = (opcode & 0x00FFu);
+
+    registers[Vx] = kk;
+    
+
+}
+
+void Chip8::OP_6xkk(){
+    
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    if (registers[Vx] == registers[Vy]) {
+        ++pc;
+        ++pc;   
+    }
+    
+
+}
+
+
+void Chip8::OP_5xy0(){
+    
+    uint16_t Vx = (opcode >> 8u & 0x000Fu);
+    uint16_t Vy = (opcode >> 4u & 0x000Fu);
+
+    if (registers[Vx] == registers[Vy]) {
+        ++pc;
+        ++pc;   
+    }
+    
+
+}
+
 void Chip8::OP_0nnn(){
     pc = (opcode & 0x0FFFu);
 }
